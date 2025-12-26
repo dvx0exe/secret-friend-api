@@ -1,0 +1,14 @@
+# Exemplo de configuração - Preencha com seus dados locais
+spring.application.name=secret_friend
+
+# MySQL (Use variáveis de ambiente ou preencha localmente)
+spring.datasource.url=jdbc:mysql://localhost:3306/db_amigo_secreto
+spring.datasource.username=root
+spring.datasource.password=SUA_SENHA_AQUI
+
+# Gmail
+spring.mail.username=SEU_EMAIL@gmail.com
+spring.mail.password=SUA_SENHA_DE_APP
+
+# Groq IA
+groq.api.key=SUA_CHAVE_GROQ_AQUI
