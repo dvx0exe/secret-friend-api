@@ -36,3 +36,9 @@ Este projeto representa uma evolução direta da minha implementação anterior 
 * `POST /api/sorteio/{eventoId}`: Realiza o sorteio, consulta a IA e dispara os e-mails.
 
 ---
+
+## 🎥 Demonstração
+
+Veja a API em ação: do cadastro no Postman até o e-mail enviado com sugestões da IA.
+
+![Demonstração do Sorteio](img/demo.gif)
