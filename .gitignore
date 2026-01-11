@@ -13,12 +13,20 @@ target/
 .settings/
 .vscode/
 bin/
+*.swp
+*.bak
 
 *.log
 logs/
 
 src/main/resources/application.properties
 src/main/resources/application.yml
+.env
+
+db_data/
 
 .DS_Store
 Thumbs.db
+.env
+
+.env

@@ -1,6 +1,6 @@
 package com.event.secret_friend.controllers;
 
-import com.event.secret_friend.entities.Event_Class;
+import com.event.secret_friend.entities.Evento;
 import com.event.secret_friend.entities.Participante;
 import com.event.secret_friend.repositories.EventoRepository;
 import com.event.secret_friend.repositories.ParticipanteRepository;
@@ -21,8 +21,17 @@ public class ParticipanteController {
 
     @PostMapping("/{eventoId}")
     public Participante cadastrarParticipante(@PathVariable Long eventoId, @RequestBody Participante participante) {
-        Event_Class evento = eventoRepository.findById(eventoId)
+        Evento evento = eventoRepository.findById(eventoId)
                 .orElseThrow(() -> new RuntimeException("Evento não encontrado"));
+
+        participante.setEvento(evento);
+        return participanteRepository.save(participante);
+    }
+
+    @PostMapping("/entrar")
+    public Participante entrarNoEvento(@RequestParam String codigo, @RequestBody Participante participante) {
+        Evento evento = eventoRepository.findByCodigoConvite(codigo)
+                .orElseThrow(() -> new RuntimeException("Código de convite inválido ou evento não encontrado."));
 
         participante.setEvento(evento);
         return participanteRepository.save(participante);

@@ -1,7 +1,9 @@
 package com.event.secret_friend.repositories;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+import com.event.secret_friend.entities.Evento;
+import java.util.Optional;
 
-import com.event.secret_friend.entities.Event_Class;
-
-public interface EventoRepository extends JpaRepository <Event_Class, Long> {
+public interface EventoRepository extends JpaRepository<Evento, Long> {
+    Optional<Evento> findByCodigoConvite(String codigoConvite);
 }

@@ -16,7 +16,7 @@ public class Participante {
     @ManyToOne
     @JoinColumn(name = "evento_id")
     @JsonBackReference
-    private Event_Class evento;
+    private Evento evento;
 
 
     @ManyToOne
@@ -32,8 +32,8 @@ public class Participante {
     public void setEmail(String email) { this.email = email; }
     public String getGostosPessoais() { return gostosPessoais; }
     public void setGostosPessoais(String gostosPessoais) { this.gostosPessoais = gostosPessoais; }
-    public Event_Class getEvento() { return evento; }
-    public void setEvento(Event_Class evento) { this.evento = evento; }
+    public Evento getEvento() { return evento; }
+    public void setEvento(Evento evento) { this.evento = evento; }
     public Participante getAmigoSorteado() { return amigoSorteado; }
     public void setAmigoSorteado(Participante amigoSorteado) { this.amigoSorteado = amigoSorteado; }
 }

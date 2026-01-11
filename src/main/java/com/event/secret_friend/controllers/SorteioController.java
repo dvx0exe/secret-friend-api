@@ -15,10 +15,10 @@ public class SorteioController {
         this.sorteioService = sorteioService;
     }
 
-    @PostMapping("/{eventoId}")
-    public ResponseEntity<String> dispararSorteio(@PathVariable Long eventoId) {
+    @PostMapping("/{codigoConvite}")
+    public ResponseEntity<String> dispararSorteio(@PathVariable String codigoConvite) {
         try {
-            sorteioService.realizarSorteio(eventoId);
+            sorteioService.realizarSorteio(codigoConvite);
             return ResponseEntity.ok("Sorteio realizado e e-mails enviados com sucesso!");
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body("Erro ao realizar sorteio: " + e.getMessage());
