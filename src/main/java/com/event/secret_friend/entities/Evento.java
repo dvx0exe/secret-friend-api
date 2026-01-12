@@ -23,6 +23,8 @@ public class Evento {
     @JsonManagedReference
     private List<Participante> participantes;
 
+    private String senha;
+
     @PrePersist
     public void gerarCodigoAutomatico() {
         if (this.codigoConvite == null) {
@@ -50,4 +52,12 @@ public class Evento {
 
     public List<Participante> getParticipantes() { return participantes; }
     public void setParticipantes(List<Participante> participantes) { this.participantes = participantes; }
+
+    public String getSenha() {
+        return senha;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
 }

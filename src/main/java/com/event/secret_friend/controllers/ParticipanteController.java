@@ -6,6 +6,11 @@ import com.event.secret_friend.repositories.EventoRepository;
 import com.event.secret_friend.repositories.ParticipanteRepository;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/participantes")
 @CrossOrigin("*")
@@ -35,5 +40,16 @@ public class ParticipanteController {
 
         participante.setEvento(evento);
         return participanteRepository.save(participante);
+    }
+
+    @GetMapping("/{codigoConvite}")
+    public ResponseEntity<List<Participante>> listarPorEvento(@PathVariable String codigoConvite) {
+        Optional<Evento> eventoOpt = eventoRepository.findByCodigoConvite(codigoConvite);
+
+        if (eventoOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(eventoOpt.get().getParticipantes());
     }
 }
