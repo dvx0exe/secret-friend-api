@@ -17,7 +17,7 @@ function showScreen(screenId) {
 
 function fazerLoginGoogle() { window.location.href = "https://api-amigo-secreto.onrender.com/oauth2/authorization/google"; }
 async function logout() {
-    try { await fetch(`${API_URL.replace('/api', '')}/logout`, { method: 'POST', credentials: 'include' }); } 
+    try { await fetch(`${API_URL.replace('/api', '')}/logout`, { method: 'POST', credentials: 'include' }); }
     catch(e) {} finally { showScreen('screen-login'); }
 }
 
@@ -59,7 +59,7 @@ function renderizarListaUnificada(lista) {
         const div = document.createElement('div');
         div.className = 'event-item';
         div.onclick = () => abrirDetalhes(ev);
-        
+
         const badgeClass = ev.tipo === 'organizador' ? 'badge-org' : 'badge-part';
         const badgeText = ev.tipo === 'organizador' ? 'Organizador' : 'Participante';
         div.innerHTML = `
@@ -75,10 +75,10 @@ function renderizarListaUnificada(lista) {
 
 function abrirDetalhes(ev) {
     eventoSelecionado = ev;
-    
+
     document.getElementById('detalheTitulo').innerText = ev.nomeEvento;
     document.getElementById('detalheCodigo').innerText = ev.codigoConvite;
-    
+
     const areaPart = document.getElementById('areaParticipantes');
     const listaEmails = document.getElementById('listaEmails');
     const btnSortear = document.getElementById('btnSortear');
@@ -92,7 +92,7 @@ function abrirDetalhes(ev) {
     if (ev.tipo === 'organizador') {
         areaPart.classList.remove('hidden');
         btnSortear.classList.remove('hidden');
-        
+
         const parts = ev.participantes || [];
         document.getElementById('countPart').innerText = parts.length;
 
@@ -133,9 +133,9 @@ async function acaoSortear() {
         if(res.ok) {
             const msg = await res.text();
             alert("✅ " + msg);
-        } else { 
-            const t = await res.text(); 
-            alert("Erro: " + t); 
+        } else {
+            const t = await res.text();
+            alert("Erro: " + t);
         }
     }
 }
@@ -168,24 +168,24 @@ async function entrarEmEvento(e) {
     const codigo = document.getElementById('joinCodigo').value.toUpperCase();
     const nome = document.getElementById('joinNome').value;
     const gostos = document.getElementById('joinGostos').value;
-    
-    const res = await fetch(`${API_URL}/participantes/entrar?codigo=${codigo}`, { 
-        method: 'POST', 
-        headers: {'Content-Type':'application/json'}, 
-        credentials:'include', 
+
+    const res = await fetch(`${API_URL}/participantes/entrar?codigo=${codigo}`, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        credentials:'include',
         body:JSON.stringify({
             nome: nome,
             gostosPessoais: gostos
         })
     });
 
-    if(res.ok) { 
-        alert("Sucesso! Você entrou no evento."); 
-        closeModal('modalEntrar'); 
-        checkSession(); 
-        document.getElementById('formJoin').reset(); 
+    if(res.ok) {
+        alert("Sucesso! Você entrou no evento.");
+        closeModal('modalEntrar');
+        checkSession();
+        document.getElementById('formJoin').reset();
     } else {
         const msg = await res.text();
-        alert("Erro: " + msg); 
+        alert("Erro: " + msg);
     }
 }
