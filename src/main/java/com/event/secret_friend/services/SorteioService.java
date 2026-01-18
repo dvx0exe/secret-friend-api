@@ -27,7 +27,7 @@ public class SorteioService {
     @Transactional
     public void realizarSorteio(String codigoConvite) {
         Evento evento = eventoRepository.findByCodigoConvite(codigoConvite)
-                .orElseThrow(() -> new RuntimeException("Evento não encontrado"));
+                .orElseThrow(() -> new RuntimeException("Evento não encontrado com o código: " + codigoConvite));
 
         List<Participante> participantes = evento.getParticipantes();
 
@@ -46,11 +46,12 @@ public class SorteioService {
         for (int i = 0; i < participantes.size(); i++) {
             Participante atual = participantes.get(i);
             Participante sorteado = (i == participantes.size() - 1) ? participantes.get(0) : participantes.get(i + 1);
+
             atual.setAmigoSorteado(sorteado);
         }
         participanteRepository.saveAll(participantes);
 
-        new Thread(() -> notificarParticipantes(participantes)).start();
+        notificarParticipantes(participantes);
     }
 
     private void notificarParticipantes(List<Participante> participantes) {
@@ -59,25 +60,13 @@ public class SorteioService {
                 Participante sorteado = atual.getAmigoSorteado();
                 String sugestao = groqService.gerarSugestaoPresente(sorteado.getGostosPessoais());
 
-                String msg = String.format("""
-                        Olá %s! 
-                        
-                        O sorteio foi realizado!
-                        
-                        🎁 Você tirou: %s
-                        
-                        ℹ️ Gostos dele(a): %s
-                        
-                        🤖 Dica da IA:
-                        %s
-                        """,
+                String msg = String.format("Olá %s! O sorteio foi realizado.\n\nVocê tirou: %s\n\nDica de presente baseada nos gostos (%s):\n%s",
                         atual.getNome(), sorteado.getNome(), sorteado.getGostosPessoais(), sugestao);
 
+                System.out.println("DEBUG EMAIL: Enviando para " + atual.getEmail());
                 emailService.enviarEmailSimples(atual.getEmail(), "Resultado Amigo Secreto", msg);
-                System.out.println("Email enviado para " + atual.getEmail());
-                Thread.sleep(1000);
             } catch (Exception e) {
-                System.err.println("Erro notificando " + atual.getNome() + ": " + e.getMessage());
+                System.err.println("Erro ao notificar " + atual.getNome() + ": " + e.getMessage());
             }
         }
     }

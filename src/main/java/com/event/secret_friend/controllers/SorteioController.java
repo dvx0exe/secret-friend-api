@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/sorteio")
-// @CrossOrigin removido intencionalmente
+@CrossOrigin("*")
 public class SorteioController {
 
     private final SorteioService sorteioService;
@@ -32,12 +32,12 @@ public class SorteioController {
         String emailLogado = principal.getAttribute("email");
         if (!evento.getEmail().equals(emailLogado)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body("Apenas o organizador pode realizar o sorteio.");
+                    .body("Apenas o organizador (" + evento.getEmail() + ") pode realizar o sorteio.");
         }
 
         try {
             sorteioService.realizarSorteio(codigoConvite);
-            return ResponseEntity.ok("Sorteio iniciado! Os participantes receberão e-mails em breve.");
+            return ResponseEntity.ok("Sorteio realizado com sucesso!");
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body("Erro: " + e.getMessage());
         }
