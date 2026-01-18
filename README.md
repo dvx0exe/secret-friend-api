@@ -94,4 +94,4 @@ A API estará disponível em `http://localhost:8080`.
 
 * **Swagger UI:** A documentação interativa pode ser acessada em `http://localhost:8080/swagger-ui.html` (Necessário login para endpoints protegidos).
 
-![](img/dockerizacao.jpeg)
+![](img/dockerizacao.jpeg)  
