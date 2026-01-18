@@ -23,7 +23,6 @@ public class Evento {
     @JsonManagedReference
     private List<Participante> participantes;
 
-    private String senha;
 
     @PrePersist
     public void gerarCodigoAutomatico() {
@@ -35,29 +34,51 @@ public class Evento {
         }
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public String getNomeEvento() { return nomeEvento; }
-    public void setNomeEvento(String nomeEvento) { this.nomeEvento = nomeEvento; }
-
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-
-    public LocalDateTime getDataSorteio() { return dataSorteio; }
-    public void setDataSorteio(LocalDateTime dataSorteio) { this.dataSorteio = dataSorteio; }
-
-    public String getCodigoConvite() { return codigoConvite; }
-    public void setCodigoConvite(String codigoConvite) { this.codigoConvite = codigoConvite; }
-
-    public List<Participante> getParticipantes() { return participantes; }
-    public void setParticipantes(List<Participante> participantes) { this.participantes = participantes; }
-
-    public String getSenha() {
-        return senha;
+    public Long getId() {
+        return id;
     }
 
-    public void setSenha(String senha) {
-        this.senha = senha;
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getNomeEvento() {
+        return nomeEvento;
+    }
+
+    public void setNomeEvento(String nomeEvento) {
+        this.nomeEvento = nomeEvento;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public LocalDateTime getDataSorteio() {
+        return dataSorteio;
+    }
+
+    public void setDataSorteio(LocalDateTime dataSorteio) {
+        this.dataSorteio = dataSorteio;
+    }
+
+    public String getCodigoConvite() {
+        return codigoConvite;
+    }
+
+    public void setCodigoConvite(String codigoConvite) {
+        this.codigoConvite = codigoConvite;
+    }
+
+    public List<Participante> getParticipantes() {
+        return participantes;
+    }
+
+    public void setParticipantes(List<Participante> participantes) {
+        this.participantes = participantes;
     }
 }

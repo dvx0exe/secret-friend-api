@@ -1,45 +1,51 @@
 package com.event.secret_friend.controllers;
 
 import com.event.secret_friend.entities.Evento;
+import com.event.secret_friend.entities.Participante;
 import com.event.secret_friend.repositories.EventoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import com.event.secret_friend.repositories.ParticipanteRepository;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-
-record LoginRequest(String codigo, String senha) {}
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/eventos")
-@CrossOrigin(origins = "*")
 public class EventoController {
 
-    @Autowired
-    private EventoRepository repository;
+    private final EventoRepository repository;
+    private final ParticipanteRepository participanteRepository;
 
-    @PostMapping
-    public ResponseEntity<Evento> criarEvento(@RequestBody Evento novoEvento) {
-        Evento eventoSalvo = repository.save(novoEvento);
-        return ResponseEntity.ok(eventoSalvo);
+    public EventoController(EventoRepository repository, ParticipanteRepository participanteRepository) {
+        this.repository = repository;
+        this.participanteRepository = participanteRepository;
     }
 
+    @PostMapping
+    public ResponseEntity<Evento> criarEvento(@RequestBody Evento novoEvento,
+                                              @AuthenticationPrincipal OAuth2User principal) {
+        String emailOrganizador = principal.getAttribute("email");
+        novoEvento.setEmail(emailOrganizador);
+        return ResponseEntity.ok(repository.save(novoEvento));
+    }
 
-    @PostMapping("/admin-login")
-    public ResponseEntity<?> acessarPainel(@RequestBody LoginRequest login) {
-        Optional<Evento> eventoOpt = repository.findByCodigoConvite(login.codigo());
+    @GetMapping("/meus-eventos")
+    public ResponseEntity<List<Evento>> listarMeusEventos(@AuthenticationPrincipal OAuth2User principal) {
+        String email = principal.getAttribute("email");
+        return ResponseEntity.ok(repository.findByEmail(email));
+    }
 
-        if (eventoOpt.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Evento não encontrado.");
-        }
+    @GetMapping("/participando")
+    public ResponseEntity<List<Evento>> listarEventosParticipando(@AuthenticationPrincipal OAuth2User principal) {
+        String email = principal.getAttribute("email");
+        List<Participante> participacoes = participanteRepository.findByEmail(email);
 
-        Evento evento = eventoOpt.get();
+        List<Evento> eventos = participacoes.stream()
+                .map(Participante::getEvento)
+                .toList();
 
-        if (evento.getSenha() != null && evento.getSenha().equals(login.senha())) {
-            return ResponseEntity.ok(evento.getParticipantes());
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Senha incorreta!");
-        }
+        return ResponseEntity.ok(eventos);
     }
 }

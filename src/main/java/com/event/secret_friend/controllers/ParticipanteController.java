@@ -4,16 +4,14 @@ import com.event.secret_friend.entities.Evento;
 import com.event.secret_friend.entities.Participante;
 import com.event.secret_friend.repositories.EventoRepository;
 import com.event.secret_friend.repositories.ParticipanteRepository;
-import org.springframework.web.bind.annotation.*;
-
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/participantes")
-@CrossOrigin("*")
 public class ParticipanteController {
 
     private final ParticipanteRepository participanteRepository;
@@ -24,32 +22,67 @@ public class ParticipanteController {
         this.eventoRepository = eventoRepository;
     }
 
-    @PostMapping("/{eventoId}")
-    public Participante cadastrarParticipante(@PathVariable Long eventoId, @RequestBody Participante participante) {
-        Evento evento = eventoRepository.findById(eventoId)
-                .orElseThrow(() -> new RuntimeException("Evento não encontrado"));
-
-        participante.setEvento(evento);
-        return participanteRepository.save(participante);
-    }
-
     @PostMapping("/entrar")
-    public Participante entrarNoEvento(@RequestParam String codigo, @RequestBody Participante participante) {
+    public ResponseEntity<?> entrarNoEvento(@RequestParam String codigo,
+                                            @RequestBody Participante dadosTela,
+                                            @AuthenticationPrincipal OAuth2User principal) {
+
         Evento evento = eventoRepository.findByCodigoConvite(codigo)
-                .orElseThrow(() -> new RuntimeException("Código de convite inválido ou evento não encontrado."));
+                .orElseThrow(() -> new RuntimeException("Código inválido."));
 
-        participante.setEvento(evento);
-        return participanteRepository.save(participante);
-    }
+        String emailGoogle = principal.getAttribute("email");
 
-    @GetMapping("/{codigoConvite}")
-    public ResponseEntity<List<Participante>> listarPorEvento(@PathVariable String codigoConvite) {
-        Optional<Evento> eventoOpt = eventoRepository.findByCodigoConvite(codigoConvite);
+        boolean jaParticipa = evento.getParticipantes().stream()
+                .anyMatch(p -> p.getEmail().equals(emailGoogle));
 
-        if (eventoOpt.isEmpty()) {
-            return ResponseEntity.notFound().build();
+        if(jaParticipa) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Você já está neste evento.");
         }
 
-        return ResponseEntity.ok(eventoOpt.get().getParticipantes());
+        Participante participante = new Participante();
+
+        if (dadosTela.getNome() != null && !dadosTela.getNome().isBlank()) {
+            participante.setNome(dadosTela.getNome());
+        } else {
+            participante.setNome(principal.getAttribute("name"));
+        }
+
+        participante.setEmail(emailGoogle);
+        participante.setGostosPessoais(dadosTela.getGostosPessoais());
+        participante.setEvento(evento);
+
+        participanteRepository.save(participante);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> removerParticipante(@PathVariable Long id, @AuthenticationPrincipal OAuth2User principal) {
+        String emailLogado = principal.getAttribute("email");
+
+        Participante participante = participanteRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Participante não encontrado"));
+
+        if (participante.getEvento().getEmail().equals(emailLogado)) {
+            participanteRepository.delete(participante);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Apenas o organizador pode remover participantes.");
+        }
+    }
+
+    @DeleteMapping("/sair/{codigo}")
+    public ResponseEntity<?> sairDoEvento(@PathVariable String codigo, @AuthenticationPrincipal OAuth2User principal) {
+        String email = principal.getAttribute("email");
+
+        Evento evento = eventoRepository.findByCodigoConvite(codigo)
+                .orElseThrow(() -> new RuntimeException("Evento não encontrado"));
+
+        Participante p = evento.getParticipantes().stream()
+                .filter(x -> x.getEmail().equals(email))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Você não participa deste evento"));
+
+        participanteRepository.delete(p);
+        return ResponseEntity.ok().build();
     }
 }

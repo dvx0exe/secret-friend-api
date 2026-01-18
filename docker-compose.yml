@@ -7,6 +7,8 @@ services:
       MYSQL_ROOT_PASSWORD: root_password
     ports:
       - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
       timeout: 5s
@@ -21,9 +23,21 @@ services:
       db:
         condition: service_healthy
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/db_amigo_secreto?createDatabaseIfNotExist=true
+      # Conexão Banco
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/db_amigo_secreto?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root_password
+
+      # E-mail
       SPRING_MAIL_USERNAME: ${EMAIL_USER}
       SPRING_MAIL_PASSWORD: ${EMAIL_PASS}
+
+      # IA Groq
       GROQ_API_KEY: ${GROQ_KEY}
+
+      # OAuth2 Google (ADICIONADO AQUI) 👇
+      SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+
+volumes:
+  mysql_data:
