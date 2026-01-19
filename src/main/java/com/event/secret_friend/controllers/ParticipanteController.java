@@ -40,7 +40,13 @@ public class ParticipanteController {
         }
 
         Participante participante = new Participante();
-        participante.setNome(principal.getAttribute("name"));
+
+        if (dadosTela.getNome() != null && !dadosTela.getNome().isBlank()) {
+            participante.setNome(dadosTela.getNome());
+        } else {
+            participante.setNome(principal.getAttribute("name"));
+        }
+
         participante.setEmail(emailGoogle);
         participante.setGostosPessoais(dadosTela.getGostosPessoais());
         participante.setEvento(evento);
