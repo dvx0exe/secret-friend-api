@@ -9,5 +9,4 @@ class SecretFriendApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
 }
