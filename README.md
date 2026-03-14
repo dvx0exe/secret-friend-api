@@ -163,7 +163,7 @@ The project uses **JUnit 5** and **Mockito** to enforce business rules:
 ## 🛠️ Tech Stack
 
 ### **Backend**
-* **Java 17** & **Spring Boot 3.x**
+* **Java 17** & **Spring Boot 4**
 * **Spring Security & OAuth2 Client**
 * **PostgreSQL** & **Spring Data JPA**
 * **Groq Cloud API** (Generative AI - Llama 3.1)
