@@ -39,7 +39,7 @@ O projeto utiliza **JUnit 5** e **Mockito** para garantir a integridade das regr
 ## 🛠️ Tecnologias Utilizadas
 
 ### **Backend**
-* **Java 17** & **Spring Boot 3.x**
+* **Java 17** & **Spring Boot 4**
 * **Spring Security & OAuth2 Client**
 * **PostgreSQL** & **Spring Data JPA**
 * **Groq Cloud API** (IA Generativa - Llama 3.1)
