@@ -1,0 +1,48 @@
+# =============================================================
+#  SECRET FRIEND API — Configuração de exemplo
+#  Copie este arquivo para application.properties e preencha
+#  com seus dados locais. NUNCA commite o arquivo real.
+#  Adicione application.properties ao seu .gitignore.
+# =============================================================
+
+spring.application.name=secret_friend
+
+# ── Banco de dados (PostgreSQL local) ────────────────────────
+spring.datasource.driver-class-name=org.postgresql.Driver
+spring.datasource.url=jdbc:postgresql://localhost:5432/db_amigo_secreto
+spring.datasource.username=SEU_USUARIO_AQUI
+spring.datasource.password=SUA_SENHA_AQUI
+
+spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+
+# ── E-mail (Brevo / SMTP) ─────────────────────────────────────
+# Para Gmail use: smtp.gmail.com, porta 587
+# Para Brevo use: smtp-relay.brevo.com, porta 2525
+spring.mail.host=smtp-relay.brevo.com
+spring.mail.port=2525
+spring.mail.username=SEU_EMAIL_SMTP_AQUI
+spring.mail.password=SUA_SENHA_SMTP_AQUI
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+spring.mail.properties.mail.smtp.starttls.required=true
+
+# ── Groq IA ───────────────────────────────────────────────────
+# Obtenha sua chave em: https://console.groq.com
+groq.api.key=SUA_CHAVE_GROQ_AQUI
+
+# ── Google OAuth2 ─────────────────────────────────────────────
+# Crie as credenciais em: https://console.cloud.google.com
+#   → APIs & Services → Credentials → Create OAuth Client ID
+spring.security.oauth2.client.registration.google.client-id=SEU_CLIENT_ID_AQUI
+spring.security.oauth2.client.registration.google.client-secret=SEU_CLIENT_SECRET_AQUI
+spring.security.oauth2.client.registration.google.scope=email,profile
+spring.security.oauth2.client.registration.google.redirect-uri={baseUrl}/login/oauth2/code/{registrationId}
+spring.security.oauth2.client.provider.google.authorization-uri=https://accounts.google.com/o/oauth2/v2/auth
+
+# ── Sessão / Cookies ──────────────────────────────────────────
+# Em produção (HTTPS) mantenha secure=true e same-site=None
+# Em desenvolvimento local pode usar secure=false e same-site=Lax
+server.servlet.session.cookie.same-site=Lax
+server.servlet.session.cookie.secure=false
